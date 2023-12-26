@@ -2,8 +2,10 @@ library(h2o)
 library(tidyverse)
 h2o.init(max_mem_size = "8g")
 
-df <- h2o.importFile("../../../project/1-data/train_data.csv")
-test_data <- h2o.importFile("../../../project/1-data/test_data.csv")
+
+
+df <- h2o.importFile("C:/Users/pauli/OneDrive/Documents/GitHub/KTU-DVDA-PROJECT/project/1-data/train_data.csv")
+test_data <- h2o.importFile("C:/Users/pauli/OneDrive/Documents/GitHub/KTU-DVDA-PROJECT/project/1-data/test_data.csv")
 df
 class(df)
 summary(df)
@@ -22,14 +24,14 @@ aml <- h2o.automl(x = x,
                   y = y,
                   training_frame = train,
                   validation_frame = valid,
-                  max_runtime_secs = 60)
+                  max_runtime_secs = 120)
 
 aml@leaderboard
 
 model <- aml@leader
 
-
-model <- h2o.getModel("XGBoost_1_AutoML_3_20231117_175636")
+model <- h2o.getModel("GBM_1_AutoML_1_20231226_184155")
+model <- h2o.getModel("GBM_1_AutoML_1_20231226_171158")
 
 h2o.performance(model, train = TRUE)
 h2o.performance(model, valid = TRUE)
@@ -37,7 +39,6 @@ perf <- h2o.performance(model, newdata = test)
 
 h2o.auc(perf)
 plot(perf, type = "roc")
-
 #h2o.performance(model, newdata = test_data)
 
 predictions <- h2o.predict(model, test_data)
@@ -48,13 +49,13 @@ predictions %>%
   as_tibble() %>%
   mutate(id = row_number(), y = p0) %>%
   select(id, y) %>%
-  write_csv("../5-predictions/predictions1.csv")
+  write_csv("C:/Users/pauli/OneDrive/Documents/GitHub/KTU-DVDA-PROJECT/project/5-predictions/predictionsgbm1.csv")
 
 ### ID, Y
 
-h2o.saveModel(model, "../4-model/", filename = "my_best_automlmodel")
+h2o.saveModel(gbm_model, "../4-model/", filename = "my_best_gbmmodel")
 
-model <- h2o.loadModel("../4-model/my_best_automlmodel")
+model <- h2o.loadModel("../4-model/my_best_gbmmodel")
 h2o.varimp_plot(model)
 
 
@@ -64,8 +65,8 @@ rf_model <- h2o.randomForest(x,
                              y,
                              training_frame = train,
                              validation_frame = valid,
-                             ntrees = 20,
-                             max_depth = 10,
+                             ntrees = 50,
+                             max_depth = 60,
                              stopping_metric = "AUC",
                              seed = 1234)
 rf_model
@@ -82,8 +83,8 @@ gbm_model <- h2o.gbm(x,
                    y,
                    training_frame = train,
                    validation_frame = valid,
-                   ntrees = 20,
-                   max_depth = 10,
+                   ntrees = 80,
+                   max_depth = 15,
                    stopping_metric = "AUC",
                    seed = 1234)
 h2o.auc(gbm_model)
@@ -171,3 +172,5 @@ deepfeatures_layer2_test = h2o.deepfeatures(dl_model, test_data, layer = 2)
 
 predictions_rf_deepfeatures <- h2o.predict(rf_model_deepfeatures, deepfeatures_layer2_test) %>%
   as_tibble()
+
+
