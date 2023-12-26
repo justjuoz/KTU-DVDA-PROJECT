@@ -1,5 +1,5 @@
 # Motivation
-
+install.packages("h2o")
 Help business to classify bad customers
 
 # Dependencies
