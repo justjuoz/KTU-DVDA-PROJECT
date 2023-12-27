@@ -20,18 +20,6 @@ train  <- h2o.assign(splits[[1]], "train") # 60%
 valid  <- h2o.assign(splits[[2]], "valid") # 20%
 test   <- h2o.assign(splits[[3]], "test")  # 20%
 
-aml <- h2o.automl(x = x,
-                  y = y,
-                  training_frame = train,
-                  validation_frame = valid,
-                  max_runtime_secs = 120)
-
-aml@leaderboard
-
-model <- aml@leader
-
-model <- h2o.getModel("GBM_1_AutoML_1_20231226_184155")
-model <- h2o.getModel("GBM_1_AutoML_1_20231226_171158")
 
 h2o.performance(model, train = TRUE)
 h2o.performance(model, valid = TRUE)
