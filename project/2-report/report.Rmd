@@ -1,34 +1,71 @@
 ---
-title: "test"
-author: "test"
-date: "10/3/2021"
+title: "PROJEKTAS"
+author: "JUSTAS JUOZELSKIS"
+date: "27/12/2023"
 output:
   html_document:
     keep_md: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Žvalgomoji analizė
+
+Galutinis projekte naudojamas duomenų rinkinys susidėjo iš trijų skirtingų lentelių su informacija apie banko klientus, norinčius pasiimti paskolą. 
+
+
+*1.* id;
+
+*2.* y - prognozuojamas kintamasis;
+
+*3.* amount_current_loan - dabartinė paimta paskola;
+
+*4.* term - terminas;
+
+*5.* credit_score - kredito įvertis;
+
+*6.* loan_purpose - paskolos pasiėmimo priežastis/paskirtis;
+ 
+*7.* yearly_income - metinis uždarbis;
+
+*8.* home_ownership - būsto padėtis;
+
+*9.* bankruptcies - bankrotai;
+
+*10.* years_current_job - kiek paskolą norintis imti žmogus jau dirba dabartiniame darbe
+
+*11.* monthly_dept - mėnesinė skola;
+
+*12.* years_credit_history - kredito istorija metais;
+
+*13.* months_since_last_delinquent - mėnesių skaičius nuo paskutinių delspinigių;
+
+*14.* open_accounts - atviros sąskaitos;
+
+*15.* credit_problems - kredito problemos;
+
+*16.* credit_balance - kredito balansas;
+
+*17.* max_open_credit - maksimalus atviras kreditas;
+
+Duomenų failas buvo suskirstytas į treniravimosi, testavimo ir validavimo imtis
+
+```{r, eval=FALSE}
+splits <- h2o.splitFrame(df, c(0.6,0.2), seed=123)
+train  <- h2o.assign(splits[[1]], "train") # 60%
+valid  <- h2o.assign(splits[[2]], "valid") # 20%
+test   <- h2o.assign(splits[[3]], "test")  # 20%
 ```
 
-TEST
+Kintamųjų svarbos histograma pagal gautą geriausią modelį:
 
-## R Markdown
+![](C:/Users/pauli/OneDrive/Desktop/VARIMP.png)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Geriausi rezultatai buvo gauti naudojant GBM metodą, kai hyperparametrų vertės lygios:
+ntree = 80; maxdepth = 15. Šio modelio AUC įvertis su testavimo duomenimis gautas 0.8377
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+ROC kreivė:
 
-```{r cars}
-summary(cars)
-```
+![](C:/Users/pauli/OneDrive/Desktop/ROCc.png)
+Naudojant h2o sukurta shiny aplikacija:
+![](C:/Users/pauli/OneDrive/Desktop/shiny.png)
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+![](C:/Users/pauli/OneDrive/Desktop/shiny2.png)
